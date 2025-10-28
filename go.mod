@@ -1,6 +1,6 @@
 module github.com/jesusmv17/leep_backend
 
-go 1.25.3
+go 1.25
 
 require (
 	github.com/bytedance/sonic v1.14.0 // indirect
