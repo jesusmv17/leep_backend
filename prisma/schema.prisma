@@ -1,0 +1,175 @@
+// Leep Audio MVP - Prisma Schema
+// This schema mirrors the Supabase implementation for local dev and DigitalOcean production
+// Source: Leep_Audio_MVP_Supabase_Documentation_React_Go.docx
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum user_role {
+  fan
+  artist
+  producer
+  admin
+}
+
+// ============================================================================
+// MODELS
+// ============================================================================
+
+model Profile {
+  id           String    @id @default(uuid()) @db.Uuid
+  display_name String?
+  role         user_role @default(fan)
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  songs        Song[]                @relation("ArtistSongs")
+  projects     Project[]             @relation("OwnedProjects")
+  comments     Comment[]             @relation("AuthorComments")
+  reviews      Review[]              @relation("ReviewerReviews")
+  tips_given   Tip[]                 @relation("TipperTips")
+  stems        Stem[]                @relation("UploaderStems")
+  events       Event[]               @relation("UserEvents")
+  invitations  ProjectInvitation[]   @relation("InviteeInvites")
+
+  @@map("profiles")
+}
+
+model Song {
+  id           BigInt   @id @default(autoincrement())
+  artist_id    String   @db.Uuid
+  title        String
+  audio_url    String?
+  artwork_url  String?
+  is_published Boolean  @default(false)
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  artist   Profile   @relation("ArtistSongs", fields: [artist_id], references: [id], onDelete: Cascade)
+  comments Comment[]
+  reviews  Review[]
+  tips     Tip[]
+  events   Event[]
+
+  // Indices for performance (mirrors Supabase)
+  @@index([artist_id, is_published], name: "songs_artist_published_idx")
+  @@index([is_published, created_at(sort: Desc)])
+  @@index([artist_id, created_at(sort: Desc)])
+  @@map("songs")
+}
+
+model Project {
+  id         BigInt   @id @default(autoincrement())
+  owner_id   String   @db.Uuid
+  title      String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  owner       Profile             @relation("OwnedProjects", fields: [owner_id], references: [id], onDelete: Cascade)
+  stems       Stem[]
+  invitations ProjectInvitation[]
+
+  @@map("projects")
+}
+
+model ProjectInvitation {
+  id         BigInt   @id @default(autoincrement())
+  project_id BigInt
+  invitee_id String   @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  invitee Profile @relation("InviteeInvites", fields: [invitee_id], references: [id], onDelete: Cascade)
+
+  // Constraint: one invite per project-user pair
+  @@unique([project_id, invitee_id], name: "project_invitee_unique")
+  @@map("project_invitations")
+}
+
+model Stem {
+  id          BigInt   @id @default(autoincrement())
+  project_id  BigInt
+  uploader_id String   @db.Uuid
+  name        String
+  file_url    String
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  project  Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  uploader Profile @relation("UploaderStems", fields: [uploader_id], references: [id], onDelete: Cascade)
+
+  @@map("stems")
+}
+
+model Comment {
+  id         BigInt   @id @default(autoincrement())
+  song_id    BigInt?
+  author_id  String?  @db.Uuid
+  body       String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  song   Song?    @relation(fields: [song_id], references: [id], onDelete: Cascade)
+  author Profile? @relation("AuthorComments", fields: [author_id], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Review {
+  id          BigInt   @id @default(autoincrement())
+  song_id     BigInt?
+  reviewer_id String?  @db.Uuid
+  rating      Int
+  body        String?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  song     Song?    @relation(fields: [song_id], references: [id], onDelete: Cascade)
+  reviewer Profile? @relation("ReviewerReviews", fields: [reviewer_id], references: [id], onDelete: Cascade)
+
+  // Constraints: rating must be 1-5 (mirrors Supabase CHECK constraints)
+  @@map("reviews")
+}
+
+model Tip {
+  id           BigInt   @id @default(autoincrement())
+  song_id      BigInt?
+  tipper_id    String?  @db.Uuid
+  amount_cents Int
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  song   Song?    @relation(fields: [song_id], references: [id], onDelete: Cascade)
+  tipper Profile? @relation("TipperTips", fields: [tipper_id], references: [id], onDelete: Cascade)
+
+  // Constraint: amount_cents must be > 0 (mirrors Supabase CHECK)
+  @@map("tips")
+}
+
+model Event {
+  id         BigInt   @id @default(autoincrement())
+  song_id    BigInt?
+  event_type String
+  user_id    String?  @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  song Song?    @relation(fields: [song_id], references: [id], onDelete: Cascade)
+  user Profile? @relation("UserEvents", fields: [user_id], references: [id])
+
+  // Index for analytics queries (mirrors Supabase)
+  @@index([song_id, event_type, created_at], name: "events_lookup_idx")
+  @@map("events")
+}

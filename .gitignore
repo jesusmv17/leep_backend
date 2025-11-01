@@ -24,9 +24,21 @@ profile.cov
 go.work
 go.work.sum
 
-# env file
+# env files - NEVER commit credentials
 .env
+.env.*
+.env.local
+.env.production
+.env.staging
+!.env.example
+
+# Node.js / Prisma (for migrations & schema management)
+node_modules/
+package-lock.json
+prisma/migrations/
 
 # Editor/IDE
 # .idea/
 # .vscode/
+
+/generated/prisma
