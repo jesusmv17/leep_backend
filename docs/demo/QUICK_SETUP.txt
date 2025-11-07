@@ -1,0 +1,117 @@
+═══════════════════════════════════════════════════════════
+  LEEP AUDIO BACKEND - QUICK SETUP REFERENCE CARD
+  For Fresh Machine Demo Setup (45-60 min)
+═══════════════════════════════════════════════════════════
+
+PHASE 1: INSTALL (25-30 min)
+────────────────────────────────────────────────────────────
+□ WSL2 (Windows only)
+  → PowerShell Admin: wsl --install
+  → Restart computer
+
+□ Docker Desktop
+  → Download: https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
+  → Install → Restart → Skip account
+  → Settings → Resources → WSL Integration → Enable Ubuntu
+  → Apply & Restart
+
+□ Go (in WSL)
+  wget https://go.dev/dl/go1.23.3.linux-amd64.tar.gz
+  sudo tar -C /usr/local -xzf go1.23.3.linux-amd64.tar.gz
+  echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+  source ~/.bashrc
+
+□ Node.js (in WSL)
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+  source ~/.bashrc
+  nvm install --lts
+
+PHASE 2: CLONE & SETUP (10 min)
+────────────────────────────────────────────────────────────
+cd ~
+git clone https://github.com/jesusmv17/Leep_Backend.git
+cd Leep_Backend
+git checkout chandler-branch
+
+sudo usermod -aG docker $USER
+newgrp docker
+
+npm install
+go mod tidy
+
+PHASE 3: START (5 min)
+────────────────────────────────────────────────────────────
+docker compose up -d
+sleep 10
+npx prisma generate
+npx prisma migrate dev --name init_schema
+docker compose exec -T db psql -U leep -d leep_dev < prisma/migrations/add_check_constraints.sql
+go run main.go   # Keep running
+
+PHASE 4: VERIFY (5 min - NEW TERMINAL)
+────────────────────────────────────────────────────────────
+curl http://localhost:3000/health
+curl http://localhost:3000/health/db
+curl http://localhost:3000/api/v1/status
+
+Browser: http://localhost:8080
+Login: PostgreSQL / db / leep / leep_dev_pw / leep_dev
+Check: 10 tables visible
+
+═══════════════════════════════════════════════════════════
+DEMO DAY QUICK START (Already Setup - 10 min)
+═══════════════════════════════════════════════════════════
+1. Start Docker Desktop (wait for whale steady)
+2. cd ~/Leep_Backend
+3. docker compose up -d && sleep 10
+4. go run main.go  (keep running)
+5. NEW TERMINAL: curl http://localhost:3000/health/db
+6. Browser: http://localhost:8080 (login, check tables)
+✅ READY!
+
+═══════════════════════════════════════════════════════════
+ADMINER LOGIN
+═══════════════════════════════════════════════════════════
+URL:      http://localhost:8080
+System:   PostgreSQL
+Server:   db
+Username: leep
+Password: leep_dev_pw
+Database: leep_dev
+
+═══════════════════════════════════════════════════════════
+API ENDPOINTS (Server on port 3000)
+═══════════════════════════════════════════════════════════
+http://localhost:3000/health       → Basic health
+http://localhost:3000/health/db    → Database health
+http://localhost:3000/api/v1/status → API status
+http://localhost:3000/ping         → Legacy ping
+
+═══════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════
+Docker permission denied:
+  sudo usermod -aG docker $USER && newgrp docker
+
+Port already in use:
+  lsof -i :3000
+  kill -9 <PID>
+
+Containers not running:
+  docker compose down
+  docker compose up -d
+
+WSL not working:
+  wsl --update
+  wsl --shutdown
+  (reopen terminal)
+
+═══════════════════════════════════════════════════════════
+BACKUP PLAN IF SETUP FAILS
+═══════════════════════════════════════════════════════════
+1. Use screenshots (take NOW from working machine)
+2. Demo from current machine via remote desktop
+3. Focus on GitHub code walkthrough instead
+
+═══════════════════════════════════════════════════════════
+Print this page and bring it to demo! 📄
