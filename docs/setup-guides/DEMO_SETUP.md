@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Pre-Demo Checklist
+##  Pre-Demo Checklist
 
 **Before you start, ensure you have:**
 - [ ] Admin access to the new machine
@@ -16,7 +16,7 @@
 
 ---
 
-## 🚀 QUICK START (Step-by-Step)
+##  QUICK START (Step-by-Step)
 
 ### **PHASE 1: Install Prerequisites (25-30 min)**
 
@@ -60,8 +60,8 @@ wsl --set-default-version 2
 
 **Install**:
 1. Run installer as Administrator
-2. ✅ Check "Use WSL 2 instead of Hyper-V" (Windows)
-3. ✅ Check "Add shortcut to desktop"
+2.  Check "Use WSL 2 instead of Hyper-V" (Windows)
+3.  Check "Add shortcut to desktop"
 4. Click Install
 5. **Restart computer if prompted**
 6. Launch Docker Desktop
@@ -69,9 +69,9 @@ wsl --set-default-version 2
 
 **Configure Docker Desktop**:
 1. Go to Settings (gear icon)
-2. Resources → WSL Integration
-3. ✅ Enable integration with my default WSL distro
-4. ✅ Enable integration with Ubuntu (check the box)
+2. Resources  WSL Integration
+3.  Enable integration with my default WSL distro
+4.  Enable integration with Ubuntu (check the box)
 5. Click "Apply & Restart"
 6. **Wait for whale icon to be steady** (not animated)
 
@@ -237,7 +237,7 @@ docker compose exec -T db psql -U leep -d leep_dev < prisma/migrations/add_check
 ```
 
 **Expected Output**:
-- "✔ Generated Prisma Client"
+- " Generated Prisma Client"
 - "Your database is now in sync with your schema"
 - "ALTER TABLE" (3 times for constraints)
 
@@ -252,10 +252,10 @@ go run main.go
 
 **Expected Output**:
 ```
-2025/11/XX XX:XX:XX ✓ Database connection established
+2025/11/XX XX:XX:XX  Database connection established
 [GIN-debug] GET /health --> ...
 [GIN-debug] GET /health/db --> ...
-2025/11/XX XX:XX:XX 🚀 Server starting on port 3000
+2025/11/XX XX:XX:XX  Server starting on port 3000
 ```
 
 **Keep this terminal running!**
@@ -286,7 +286,7 @@ curl http://localhost:3000/ping
 # Expected: {"message":"pong"}
 ```
 
-**All 4 should return JSON** ✅
+**All 4 should return JSON** 
 
 ---
 
@@ -327,11 +327,11 @@ http://localhost:8080
 - [ ] Adminer shows 10 tables
 - [ ] Can click into `profiles` table and see structure
 
-**If all checked** ✅ → **DEMO READY!**
+**If all checked**   **DEMO READY!**
 
 ---
 
-## 🎯 DEMO DAY QUICK START (10 minutes)
+##  DEMO DAY QUICK START (10 minutes)
 
 **If machine is already set up from previous day:**
 
@@ -359,12 +359,12 @@ curl http://localhost:3000/health/db
 # Browser: http://localhost:8080
 # Login with credentials above
 
-# ✅ READY TO DEMO!
+#  READY TO DEMO!
 ```
 
 ---
 
-## ⚡ SPEED RUN (Absolute Minimum - 30 min)
+##  SPEED RUN (Absolute Minimum - 30 min)
 
 **If you're SHORT on time:**
 
@@ -378,7 +378,7 @@ curl http://localhost:3000/health/db
 
 ---
 
-## 🚨 Common Issues & Fixes
+##  Common Issues & Fixes
 
 ### Issue 1: Docker Permission Denied
 ```bash
@@ -431,7 +431,7 @@ wsl --shutdown
 
 ---
 
-## 📱 BACKUP PLAN (If Setup Fails)
+##  BACKUP PLAN (If Setup Fails)
 
 **If you CAN'T get it running on new machine:**
 
@@ -452,7 +452,7 @@ wsl --shutdown
 
 ---
 
-## 📸 Take These Screenshots NOW (Backup)
+##  Take These Screenshots NOW (Backup)
 
 **On your CURRENT working machine, screenshot:**
 
@@ -471,7 +471,7 @@ wsl --shutdown
 
 ---
 
-## ⏱️ Time Breakdown
+##  Time Breakdown
 
 | Phase | Task | Time | Can Skip? |
 |-------|------|------|-----------|
@@ -491,7 +491,7 @@ wsl --shutdown
 
 ---
 
-## ✅ Final Pre-Demo Checklist
+##  Final Pre-Demo Checklist
 
 **Night Before:**
 - [ ] Screenshots taken and backed up
@@ -510,8 +510,8 @@ wsl --shutdown
 
 ---
 
-## 🎯 YOU'RE READY!
+##  YOU'RE READY!
 
 **Follow this guide step-by-step and you'll have a working demo in under an hour.**
 
-**Good luck! 🚀**
+**Good luck! **

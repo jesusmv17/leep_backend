@@ -1,20 +1,12 @@
 # Leep Audio Backend
 
-Production-ready Go backend for Leep Audio MVP with PostgreSQL, Docker, and DigitalOcean Spaces integration.
+Production-ready Go backend for Leep Audio MVP with Supabase integration.
 
-## 🚀 Quick Start
+##  Quick Start
 
 ```bash
-# Start Docker containers
-docker compose up -d
-
 # Install dependencies
-npm install
 go mod tidy
-
-# Setup database
-npx prisma generate
-npx prisma migrate dev
 
 # Start server
 go run main.go
@@ -22,94 +14,150 @@ go run main.go
 
 Server runs on `http://localhost:3000`
 
-## 📚 Documentation
+**Week 2 & 3 Complete**: Full MVP backend with auth, songs, projects, engagement, analytics, and admin features!
 
-All documentation is in the [`/docs`](/docs) folder:
+##  Documentation
 
+- **[API Documentation](API.md)** - Complete API reference with all endpoints
+- **[Deployment Guide](DEPLOY.md)** - Step-by-step Render.com deployment
+- **[Week 1 Status](docs/reference/WEEK1_STATUS.md)** - Week 1 deliverables
+
+### Legacy Documentation (Week 1)
 - **[Setup Guide](docs/setup-guides/SETUP.md)** - Complete local development setup
-- **[Demo Setup](docs/setup-guides/DEMO_SETUP.md)** - Fresh machine setup (45-60 min)
 - **[Demo Guide](docs/demo/DEMO_GUIDE.md)** - Sponsor demo script
-- **[Week 1 Status](docs/reference/WEEK1_STATUS.md)** - Deliverables completion report
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 leep_backend/
-├── internal/
-│   ├── db/          # Database connection pooling
-│   ├── health/      # Health check endpoints
-│   └── storage/     # DigitalOcean Spaces client
-├── prisma/
-│   ├── schema.prisma       # Database schema (9 models)
-│   └── migrations/         # Database migrations
-├── docs/            # All documentation
-└── main.go          # Application entry point
+ internal/
+    db/          # Database connection pooling
+    health/      # Health check endpoints
+    storage/     # DigitalOcean Spaces client
+ prisma/
+    schema.prisma       # Database schema (9 models)
+    migrations/         # Database migrations
+ docs/            # All documentation
+ main.go          # Application entry point
 ```
 
-## 🔧 Tech Stack
+##  Tech Stack
 
 - **Runtime**: Go 1.25
 - **Framework**: Gin Web Framework
-- **Database**: PostgreSQL 16 (via Docker)
-- **ORM**: Prisma (for migrations)
-- **Driver**: pgx/v5 (connection pooling)
-- **Storage**: DigitalOcean Spaces (S3-compatible)
-- **DevOps**: Docker Compose, GitHub Actions
+- **Backend-as-a-Service**: Supabase (Auth, DB, Storage)
+- **Database**: PostgreSQL (via Supabase)
+- **Authentication**: JWT with Supabase Auth
+- **Deployment**: Render.com
+- **Middleware**: CORS, Rate Limiting, Structured Logging
 
-## 📊 API Endpoints
+##  API Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /health` | Basic health check |
-| `GET /health/db` | Database health with pool stats |
-| `GET /api/v1/status` | API version and status |
-| `GET /ping` | Legacy ping endpoint |
+### Authentication
+- `POST /api/v1/auth/signup` - User registration
+- `POST /api/v1/auth/login` - User login
+- `GET /api/v1/auth/me` - Get current user
+- `GET /api/v1/auth/profile` - Get user profile
+- `POST /api/v1/auth/logout` - Logout
 
-## 🗄️ Database Schema
+### Songs
+- `GET /api/v1/songs` - List public songs
+- `POST /api/v1/songs` - Create song
+- `GET /api/v1/songs/:id` - Get song
+- `PATCH /api/v1/songs/:id` - Update song
+- `DELETE /api/v1/songs/:id` - Delete song
+- `POST /api/v1/songs/:id/publish` - Publish song
+
+### Projects & Collaboration
+- `GET /api/v1/projects` - List projects
+- `POST /api/v1/projects` - Create project
+- `POST /api/v1/projects/:id/invite` - Invite collaborator
+- `POST /api/v1/projects/:id/stems` - Upload stem
+- `GET /api/v1/projects/:id/stems` - List stems
+
+### Engagement
+- `POST /api/v1/comments` - Create comment
+- `POST /api/v1/reviews` - Create review
+- `POST /api/v1/tips` - Create tip
+- `GET /api/v1/songs/:id/comments` - List comments
+- `GET /api/v1/songs/:id/reviews` - List reviews
+
+### Analytics
+- `POST /api/v1/events` - Log event (play/view)
+- `GET /api/v1/analytics/artist/:id` - Artist dashboard
+
+### Admin (Moderation)
+- `POST /api/v1/admin/songs/:id/takedown` - Takedown song
+- `DELETE /api/v1/admin/comments/:id` - Delete comment
+- `GET /api/v1/admin/users` - List users
+- `PATCH /api/v1/admin/users/:id/role` - Update user role
+
+See [API.md](API.md) for complete documentation.
+
+##  Database Schema (Supabase)
 
 9 tables supporting the full MVP:
 - **profiles** - User management with roles (fan, artist, producer, admin)
-- **songs** - Artist content with publish controls
+- **songs** - Artist content with publish controls (RLS enforced)
 - **projects** - Collaboration workspaces
 - **project_invitations** - Producer invite system
 - **stems** - Individual audio file uploads
-- **comments** - Fan engagement
-- **reviews** - 5-star rating system
+- **comments** - Fan engagement (with Realtime)
+- **reviews** - 5-star rating system (CHECK constraints)
 - **tips** - Artist monetization
 - **events** - Analytics tracking (plays, views)
 
-## 🛠️ Development
+All tables have Row Level Security (RLS) policies enforced via Supabase.
+
+##  Development
 
 ### Prerequisites
-- Docker Desktop
 - Go 1.25+
-- Node.js 16+ (for Prisma)
+- Supabase account & credentials
 
-### Common Commands
+### Environment Variables
 
+Create `.env` file:
 ```bash
-# Start environment
-make docker-up
-
-# Apply migrations
-make db-migrate
-
-# Run server
-make dev
-
-# View database
-make db-studio
+PORT=3000
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_JWT_SECRET=your-jwt-secret
+JWT_EXPIRY=3600
 ```
 
-See `Makefile` for all commands.
+### Run Locally
 
-## 📦 Deployment
+```bash
+# Install dependencies
+go mod tidy
 
-Backend is ready for deployment to DigitalOcean or Render.
+# Run server
+go run main.go
 
-See [SETUP.md](docs/setup-guides/SETUP.md) for production deployment guide.
+# Or build and run
+go build -o leep_backend main.go
+./leep_backend
+```
 
-## 👥 Team
+Server will start on `http://localhost:3000`
+
+##  Deployment
+
+Backend is production-ready for Render.com deployment.
+
+See [DEPLOY.md](DEPLOY.md) for step-by-step deployment guide.
+
+**Quick Deploy**:
+1. Push to GitHub
+2. Connect to Render
+3. Set environment variables
+4. Deploy!
+
+Live in 5 minutes 
+
+##  Team
 
 - **Jesus** - Backend Core (Auth, Roles)
 - **Brendan** - Media & Collaboration
@@ -117,6 +165,6 @@ See [SETUP.md](docs/setup-guides/SETUP.md) for production deployment guide.
 - **Chandler** - DevOps & Infrastructure
 - **Yaman** - Frontend Integration & QA
 
-## 📝 License
+##  License
 
 UNLICENSED - Private project for Leep Inc.

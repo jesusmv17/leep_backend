@@ -129,7 +129,7 @@ INSERT INTO events (event_type) VALUES ('invalid');  -- must be 'play' or 'view'
 ### 1. Provision Managed Postgres
 
 1. Log into DigitalOcean
-2. Navigate to **Databases** → **Create Database**
+2. Navigate to **Databases**  **Create Database**
 3. Choose **PostgreSQL 16**
 4. Select your region (e.g., NYC3)
 5. Choose plan (start with Basic/Dev for staging)
@@ -158,7 +158,7 @@ npx prisma studio
 
 ### 3. Create DigitalOcean Spaces Bucket
 
-1. Navigate to **Spaces** → **Create Space**
+1. Navigate to **Spaces**  **Create Space**
 2. Choose region (same as database for low latency)
 3. Enable **CDN** (optional but recommended)
 4. Restrict File Listing: **Yes**
@@ -168,15 +168,15 @@ npx prisma studio
 **Create folder structure** (via web UI or CLI):
 ```
 leep-audio/
-├── audio/
-│   └── (user uploads will be in audio/<user_id>/<uuid>.mp3)
-└── artwork/
-    └── (artwork uploads in artwork/<user_id>/<uuid>.jpg)
+ audio/
+    (user uploads will be in audio/<user_id>/<uuid>.mp3)
+ artwork/
+     (artwork uploads in artwork/<user_id>/<uuid>.jpg)
 ```
 
 ### 4. Generate Spaces Access Keys
 
-1. Go to **API** → **Spaces Keys**
+1. Go to **API**  **Spaces Keys**
 2. Click **Generate New Key**
 3. Name: `leep-backend-prod`
 4. **Copy Access Key and Secret** (secret only shown once!)
@@ -213,7 +213,7 @@ curl http://localhost:8080/health/db
 
 ## Week 1 Deliverables Checklist
 
-### Local Environment ✓
+### Local Environment 
 - [x] Docker Postgres running on port 5432
 - [x] Adminer UI accessible
 - [x] Prisma schema mirrors Supabase design
@@ -221,7 +221,7 @@ curl http://localhost:8080/health/db
 - [x] Go server connects to database
 - [x] Health checks working (`/health`, `/health/db`)
 
-### Production Prep ✓
+### Production Prep 
 - [ ] DigitalOcean Managed Postgres provisioned
 - [ ] Migrations deployed to production
 - [ ] Spaces bucket created (`leep-audio`)

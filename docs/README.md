@@ -2,7 +2,7 @@
 
 This folder contains all project documentation organized by purpose.
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ### `/demo/`
 Demo preparation and execution guides:
@@ -26,7 +26,7 @@ Original project requirements and planning documents:
 - **Leep_Audio_MVP_Backend_Summary.docx** - Backend essentials and scope
 - **Leep_Audio_MVP_Supabase_Documentation_React_Go.docx** - Supabase implementation details
 
-## 🚀 Quick Links
+##  Quick Links
 
 **Getting Started:**
 1. Read `/setup-guides/SETUP.md` for local development
